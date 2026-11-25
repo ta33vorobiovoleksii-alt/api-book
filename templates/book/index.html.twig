@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Каталог книг — BookLibrary{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">Каталог книг</h1>
+        <span class="badge bg-secondary fs-6">Знайдено: {{ books|length }}</span>
+    </div>
+
+    <form method="get" action="{{ path('app_book_index') }}" class="card card-body shadow-sm mb-4">
+        <div class="row g-2">
+            <div class="col-md-6">
+                <input type="text" name="q" value="{{ currentQuery }}" class="form-control"
+                       placeholder="Пошук за назвою книги або ім'ям автора...">
+            </div>
+            <div class="col-md-4">
+                <select name="author" class="form-select">
+                    <option value="">Усі автори</option>
+                    {% for author in authors %}
+                        <option value="{{ author.id }}" {{ currentAuthor == author.id ? 'selected' : '' }}>
+                            {{ author.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-1">
+                <button type="submit" class="btn btn-primary w-100">Знайти</button>
+                {% if currentQuery or currentAuthor %}
+                    <a href="{{ path('app_book_index') }}" class="btn btn-outline-secondary">✕</a>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+
+    {% if books is empty %}
+        <div class="alert alert-info">
+            Книг поки немає або за вашим запитом нічого не знайдено. Додайте їх через <a href="/admin">адмінку</a>.
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for book in books %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ book.author.name }}</h6>
+                            <p class="card-text text-secondary small flex-grow-1">
+                                {{ book.description ? book.description|slice(0, 120) ~ (book.description|length > 120 ? '...' : '') : 'Опис відсутній.' }}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                                <small class="text-muted">{{ book.publishedYear }} р. · {{ book.pages }} стор.</small>
+                                <a href="{{ path('app_book_show', {id: book.id}) }}" class="btn btn-sm btn-outline-primary">
+                                    Детальніше
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

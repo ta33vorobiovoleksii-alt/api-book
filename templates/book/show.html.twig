@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ book.title }} — BookLibrary{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_book_index') }}" class="btn btn-outline-secondary btn-sm mb-3">← Назад до каталогу</a>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <h1 class="h2 mb-1">{{ book.title }}</h1>
+            <p class="text-muted fs-5 mb-4">
+                Автор: <strong>{{ book.author.name }}</strong>
+                {% if book.author.country %} ({{ book.author.country }}){% endif %}
+            </p>
+
+            <div class="row g-3 mb-4">
+                <div class="col-auto">
+                    <span class="badge bg-primary-subtle text-primary-emphasis p-2">
+                        Рік видання: {{ book.publishedYear }}
+                    </span>
+                </div>
+                <div class="col-auto">
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis p-2">
+                        Сторінок: {{ book.pages }}
+                    </span>
+                </div>
+                {% if book.author.birthYear %}
+                    <div class="col-auto">
+                        <span class="badge bg-info-subtle text-info-emphasis p-2">
+                            Рік народження автора: {{ book.author.birthYear }}
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <h5 class="mb-2">Опис</h5>
+            <p class="mb-0" style="white-space: pre-line;">
+                {{ book.description ?: 'Опис для цієї книги ще не додано.' }}
+            </p>
+        </div>
+    </div>
+{% endblock %}
